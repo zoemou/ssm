@@ -1,0 +1,23 @@
+spring:
+  thymeleaf:
+    cache: false
+
+  datasource:
+    username: root
+    password: ls123456
+    url: jdbc:mysql://localhost:3306/trading_platform?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis:
+  type-aliases-package: org.lisen.ssmsecuritydemo01.model
+  mapper-locations: classpath:mappers/*.xml
+  config-location: classpath:page-config.xml
+
+thymeleaf:
+  prefix: classpath:/templates/  #prefix??????????
+  check-template-location: true  #check-tempate-location: ??????????
+  cache: false  #cache: ?????????????false????????????????????true????????
+  suffix:  .html
+  #encoding: UTF-8
+  #content-type: text/html
+  mode: HTML5
