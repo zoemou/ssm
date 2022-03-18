@@ -16,9 +16,13 @@
               U.LAST_UPDATE_DATE lastUpdateDate,
               U.LAST_UPDATED_BY lastUpdatedBy
           FROM
-              USER1 U
+              USERD U
           WHERE
               U.STATUS = 1
           AND U.USER_NAME = #{userName}
     </select>
+    <insert id="saveUser">
+        insert into USERD(USER_NAME, PASSWORD, PHONE, EMAIL, STATUS, CREATION_DATE, CREATED_BY, LAST_UPDATE_DATE, LAST_UPDATED_BY)
+        values (#{userName}, #{password}, #{phone}, #{email},#{status}, #{creationDate}, #{createdBy}, #{lastUpdateDate}, #{lastUpdatedBy})
+    </insert>
 </mapper>

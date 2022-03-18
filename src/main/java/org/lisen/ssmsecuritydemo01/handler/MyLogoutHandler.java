@@ -1,7 +1,7 @@
 package org.lisen.ssmsecuritydemo01.handler;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
@@ -18,20 +18,26 @@ import java.io.PrintWriter;
  */
 @Component
 public class MyLogoutHandler implements LogoutHandler {
-    private Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private Logger logger;
     @Override
     public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {
-        httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        httpServletResponse.setCharacterEncoding("UTF-8");
-        PrintWriter out = null;
-        try {
-            out = httpServletResponse.getWriter();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (authentication !=null){
+            httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            httpServletResponse.setCharacterEncoding("UTF-8");
+            PrintWriter out = null;
+            try {
+                out = httpServletResponse.getWriter();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            logger.info("注销成功");
+            out.write(authentication.getName()+"账户已注销!");
+            out.flush();
+            out.close();
+        }else{
+            logger.info("没有用户在线");
         }
-        logger.info("注销成功");
-        out.write("账户已注销!");
-        out.flush();
-        out.close();
     }
 }

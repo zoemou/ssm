@@ -21,4 +21,8 @@
         AND UR.ROLE_ID = R.ROLE_ID
         AND R.STATUS = 1
     </select>
+    <insert id="saveRole">
+        insert into USER_ROLE(USER_ID,ROLE_ID)
+        values(#{userId}, #{roleId})
+    </insert>
 </mapper>

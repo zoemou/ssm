@@ -1,17 +1,16 @@
 package org.lisen.ssmsecuritydemo01.handler;
 
-import org.lisen.ssmsecuritydemo01.model.MyUser;
-import org.lisen.ssmsecuritydemo01.service.impl.MyUserDetailService;
+import org.lisen.ssmsecuritydemo01.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpSession;
-import java.util.Date;
+
 
 /**
  * @Version 1.0.0
@@ -20,25 +19,12 @@ import java.util.Date;
  */
 @Component
 public class MyAuthenticationProvider implements AuthenticationProvider {
-
-    private UserDetailsService userDetailsService;
+    @Autowired
+    private UserServiceImpl userServiceimpl;
+    @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
     private HttpSession session;
-
-//    @Autowired
-//    public void setUserDetailsService(MyUserDetailService myUserDetailService) {
-//        this.userDetailsService = myUserDetailService;
-//    }
-
-    @Autowired
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    @Autowired
-    public void setSession(HttpSession session) {
-        this.session = session;
-    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -48,8 +34,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
         String password = (String) authentication.getCredentials();
 
         //查询用户是否存在
-        MyUser user = (MyUser) userDetailsService.loadUserByUsername(username);
-
+        UserDetails user =  userServiceimpl.loadUserByUsername(username);
         if (!user.isEnabled()) {
             throw new DisabledException("该账户已被禁用，请联系管理员");
 
@@ -67,7 +52,6 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadCredentialsException("用户名或密码输入错误，请重新输入!");
         }
-//        user.setDaysAfterReg((int) (new Date().getTime() - user.getUserReg().getTime())/1000/3600/24 + 1);
         session.setAttribute("user", user);
         return new UsernamePasswordAuthenticationToken(user, password, user.getAuthorities());
     }

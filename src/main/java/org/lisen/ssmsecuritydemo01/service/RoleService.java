@@ -15,5 +15,7 @@ public interface RoleService {
      * @param userId
      * @return
      */
-    public List<Role> getUserRole(Integer userId);
+     List<Role> getUserRole(Integer userId);
+
+     void saveRole(Role role);
 }

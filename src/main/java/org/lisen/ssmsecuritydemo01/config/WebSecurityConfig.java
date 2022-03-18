@@ -2,14 +2,13 @@ package org.lisen.ssmsecuritydemo01.config;
 
 import org.lisen.ssmsecuritydemo01.handler.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 
 /**
@@ -24,14 +23,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
     @Autowired
     MyAuthenticationFailureHandler myAuthenticationFailureHandler;
-//    @Autowired
-//    MyAuthenticationProvider myAuthenticationProvider;
+    @Autowired
+    MyAuthenticationProvider myAuthenticationProvider;
     @Autowired
     MyAuthenticationAccessDeniedHandler myAuthenticationAccessDeniedHandler;
     @Autowired
     MyLogoutHandler myLogoutHandler;
     @Autowired
     MyAuthenticationEnteyPiontHandler myAuthenticationEnteyPiontHandler;
+    @Autowired
+    HttpSessionEventPublisher httpSessionEventPublisher;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -43,13 +44,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/","/index","/login","/logout","/register","/login_page").permitAll()
-                .antMatchers("/admin/**").hasRole("admin")
-                .antMatchers("/user/**").hasRole("user")
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/user/**").hasRole("USER")
                 .anyRequest().authenticated()
 
                 .and()
                 .formLogin()                                    // 登录认证
-//                .loginPage("/login_page")                       // 自定义前端登录页面
+                .loginPage("/login_page")                       // 自定义前端登录页面
                 .loginProcessingUrl("/login")              // 处理登录请求的映射地址
                 .successHandler(myAuthenticationSuccessHandler)   // 认证成功处理
                 .failureHandler(myAuthenticationFailureHandler)   // 认证失败处理
@@ -75,14 +76,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(myAuthenticationEnteyPiontHandler)  //未登录
                 .accessDeniedHandler(myAuthenticationAccessDeniedHandler)      //未授权
                 .and()
-                .csrf().disable();
-        ;
+                .csrf().disable()
+
+                //session只保存一个用户
+                .sessionManagement()
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(true);
     }
 
     // 认证
     @Override
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(myAuthenticationProvider);
     }
+
+
 }

@@ -28,6 +28,21 @@ public class MyUser implements UserDetails {
         return userName;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return this.toString().equals(o.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return userName.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.userName;
+    }
+
     public void setUserName(String userName) {
         this.userName = userName;
     }

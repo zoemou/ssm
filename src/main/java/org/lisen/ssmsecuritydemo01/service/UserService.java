@@ -14,5 +14,7 @@ public interface UserService extends UserDetailsService {
      * @param userName
      * @return
      */
-    public MyUser getUserByName(String userName);
+     MyUser getUserByName(String userName);
+
+     void saveUser(String userName,String password);
 }

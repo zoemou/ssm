@@ -23,4 +23,9 @@ public class RoleServiceImpl implements RoleService {
         List<Role> roles = roleMapper.getUserRole(userId);
         return roles;
     }
+
+    @Override
+    public void saveRole(Role role) {
+        roleMapper.saveRole(role);
+    }
 }

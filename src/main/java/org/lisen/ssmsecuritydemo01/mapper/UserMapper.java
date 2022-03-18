@@ -16,5 +16,6 @@ public interface UserMapper {
      * @param userName
      * @return
      */
-    public MyUser getUserByName(String userName);
+     MyUser getUserByName(String userName);
+     void saveUser(MyUser myUser);
 }
